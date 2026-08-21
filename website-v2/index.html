@@ -1,0 +1,761 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!doctype html>
+<html lang="en" dir="ltr" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Hero</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { box-sizing: border-box; }
+    * { font-family: 'Tajawal', sans-serif; }
+    .glass-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(6, 182, 212, 0.15); }
+    .neon-glow { filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.6)); }
+    @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.4); } 50% { box-shadow: 0 0 40px rgba(6, 182, 212, 0.7); } }
+    @keyframes wave { 0% { transform: translateX(0) translateY(0); } 50% { transform: translateX(-2%) translateY(-3px); } 100% { transform: translateX(0) translateY(0); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    @keyframes shimmer { 0% { box-shadow: 0 0 0px rgba(6, 182, 212, 0); } 50% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.8); } 100% { box-shadow: 0 0 0px rgba(6, 182, 212, 0); } }
+    @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+    .animate-wave { animation: wave 4s ease-in-out infinite; }
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    .animate-shimmer { animation: shimmer 2s ease-in-out infinite; }
+    .animate-slide-in { animation: slideInUp 0.5s ease-out; }
+    .activity-btn { transition: all 0.3s ease; }
+    .activity-btn.active { animation: shimmer 0.8s ease-in-out; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1e293b; }
+    ::-webkit-scrollbar-thumb { background: #0891b2; border-radius: 3px; }
+    .tip-card { transition: all 0.3s ease; }
+    .tip-card:hover { transform: translateY(-5px); box-shadow: 0 0 30px rgba(6, 182, 212, 0.3); }
+    .chart-item { animation: slideInUp 0.6s ease-out; }
+    .lang-btn { transition: all 0.3s ease; }
+    .lang-btn.active { background: rgba(6, 182, 212, 0.3); border-color: rgba(6, 182, 212, 0.5); }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-slate-950 text-white overflow-auto">
+  <div class="min-h-full w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+   <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
+   </div>
+   <div class="relative z-10 max-w-md mx-auto px-4 py-6">
+    <!-- Language Switcher -->
+    <div class="flex gap-2 mb-6 bg-slate-900/50 rounded-2xl p-2 backdrop-blur-sm sticky top-6 z-50 justify-center">
+     <button id="lang-ar" class="lang-btn px-4 py-2 rounded-lg font-bold text-sm border border-slate-700 text-white hover:text-cyan-400 transition-all">العربية</button>
+     <button id="lang-en" class="lang-btn px-4 py-2 rounded-lg font-bold text-sm border border-slate-700 text-white hover:text-cyan-400 transition-all">English</button>
+     <button id="lang-fr" class="lang-btn px-4 py-2 rounded-lg font-bold text-sm border border-slate-700 text-white hover:text-cyan-400 transition-all">Français</button>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex gap-1 mb-6 bg-slate-900/50 rounded-2xl p-1 backdrop-blur-sm overflow-x-auto sticky top-24 z-50">
+     <button id="tab-home" class="flex-1 min-w-fit py-2 px-3 rounded-lg font-medium text-xs sm:text-sm transition-all bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 whitespace-nowrap">🏠 <span data-i18n="home">Home</span></button>
+     <button id="tab-calculator" class="flex-1 min-w-fit py-2 px-3 rounded-lg font-medium text-xs sm:text-sm transition-all text-slate-400 hover:text-slate-300 whitespace-nowrap">🧮 <span data-i18n="calculator">Calculator</span></button>
+     <button id="tab-add" class="flex-1 min-w-fit py-2 px-3 rounded-lg font-medium text-xs sm:text-sm transition-all text-slate-400 hover:text-slate-300 whitespace-nowrap">➕ <span data-i18n="record">Record</span></button>
+     <button id="tab-tips" class="flex-1 min-w-fit py-2 px-3 rounded-lg font-medium text-xs sm:text-sm transition-all text-slate-400 hover:text-slate-300 whitespace-nowrap">💡 <span data-i18n="tips">Tips</span></button>
+     <button id="tab-about" class="flex-1 min-w-fit py-2 px-3 rounded-lg font-medium text-xs sm:text-sm transition-all text-slate-400 hover:text-slate-300 whitespace-nowrap">ℹ️ <span data-i18n="about">About</span></button>
+    </div>
+
+    <!-- Time Message Modal -->
+    <div id="time-message-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4">
+     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+     <div id="time-message-content" class="relative glass-card rounded-3xl p-6 max-w-sm w-full animate-slide-in">
+      <div class="text-center space-y-4">
+       <div id="message-icon" class="text-6xl mb-4">✅</div>
+       <h3 id="message-title" class="text-xl font-bold text-white" data-i18n="perfect_duration">Perfect Duration!</h3>
+       <p id="message-text" class="text-sm text-slate-300" data-i18n="appropriate_duration">The duration you spent is very appropriate!</p>
+       <button onclick="closeTimeMessage()" class="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all" data-i18n="got_it">✨ Got it</button>
+      </div>
+     </div>
+    </div>
+
+    <!-- HOME TAB -->
+    <div id="content-home" class="space-y-5">
+     <header class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-3">
+       <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center neon-glow">
+        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+       </div>
+       <div>
+        <h1 id="app-title" class="text-xl font-bold text-white" data-i18n="app_title">Water Hero</h1>
+        <p class="text-xs text-cyan-400" data-i18n="app_subtitle">🌊 Water Conservation Hero</p>
+       </div>
+      </div>
+     </header>
+     <div class="glass-card rounded-3xl p-6 animate-pulse-glow">
+      <div class="text-center mb-4">
+       <p class="text-slate-400 text-sm mb-2" data-i18n="todays_consumption">💧 Today's Consumption</p>
+       <p id="today-wastage" class="text-4xl font-bold text-white mb-1">0</p>
+       <p class="text-cyan-400 text-sm" data-i18n="liters_water">Liters of water</p>
+      </div>
+      <div class="grid grid-cols-3 gap-2 text-center">
+       <div class="p-3 rounded-xl bg-slate-800/30 border border-slate-700/50">
+        <p class="text-slate-400 text-xs mb-1" data-i18n="daily_cost">💰 Daily Cost</p>
+        <p id="cost-daily" class="text-lg font-bold text-cyan-400">0 EGP</p>
+       </div>
+       <div class="p-3 rounded-xl bg-slate-800/30 border border-slate-700/50">
+        <p class="text-slate-400 text-xs mb-1" data-i18n="weekly_cost">📅 Weekly Cost</p>
+        <p id="cost-weekly" class="text-lg font-bold text-emerald-400">0 EGP</p>
+       </div>
+       <div class="p-3 rounded-xl bg-slate-800/30 border border-slate-700/50">
+        <p class="text-slate-400 text-xs mb-1" data-i18n="monthly_cost">📆 Monthly Cost</p>
+        <p id="cost-monthly" class="text-lg font-bold text-orange-400">0 EGP</p>
+       </div>
+      </div>
+     </div>
+     <div class="glass-card rounded-2xl p-4 space-y-3">
+      <p class="text-sm font-bold text-white" data-i18n="most_consuming">🏆 Most Consuming Activities Today:</p>
+      <div id="activity-chart" class="space-y-2"></div>
+     </div>
+     <div class="glass-card rounded-2xl p-4 space-y-3">
+      <p class="text-sm font-bold text-white" data-i18n="activity_costs">💰 Activity Costs Today:</p>
+      <div id="savings-chart" class="space-y-2"></div>
+     </div>
+     <div class="glass-card rounded-2xl p-4 space-y-3">
+      <p class="text-sm font-bold text-white" data-i18n="quick_stats">⚡ Quick Statistics:</p>
+      <div class="grid grid-cols-2 gap-2">
+       <div class="p-3 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-cyan-500/30">
+        <p class="text-xs text-slate-400" data-i18n="total_activities">📍 Total Activities</p>
+        <p id="total-activities" class="text-2xl font-bold text-cyan-400">0</p>
+       </div>
+       <div class="p-3 rounded-lg bg-gradient-to-br from-emerald-500/20 to-green-500/20 border border-emerald-500/30">
+        <p class="text-xs text-slate-400" data-i18n="top_activity">🎯 Top Activity</p>
+        <p id="best-activity" class="text-lg font-bold text-emerald-400">-</p>
+       </div>
+      </div>
+     </div>
+     <button id="btn-start" class="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all neon-glow text-center flex items-center justify-center gap-2 text-lg" data-i18n="start_now">🚀 Start Now</button>
+    </div>
+
+    <!-- CALCULATOR TAB -->
+    <div id="content-calculator" class="space-y-5 hidden">
+     <div class="glass-card rounded-3xl p-6">
+      <h2 class="text-lg font-bold text-white mb-6" data-i18n="consumption_simulator">🧮 Consumption Simulator</h2>
+      <div class="space-y-4 mb-6">
+       <label class="block text-sm font-bold text-cyan-400" data-i18n="select_activity">Select Activity:</label>
+       <select id="calc-activity" class="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50">
+        <option value="">-- Select Activity --</option>
+        <option value="Showering">🚿 Showering</option>
+        <option value="Dishwashing">🍽️ Dishwashing</option>
+        <option value="PlantWatering">🌿 Plant Watering</option>
+        <option value="CarWashing">🚗 Car Washing</option>
+        <option value="Laundry">👕 Laundry</option>
+        <option value="Cleaning">🧹 Cleaning</option>
+        <option value="HandWashing">🧼 Hand Washing</option>
+        <option value="Cooking">🍳 Cooking</option>
+       </select>
+      </div>
+      <div class="space-y-4 mb-6">
+       <label for="calc-minutes" class="block text-sm font-bold text-cyan-400" data-i18n="duration_minutes">Duration (Minutes):</label>
+       <input type="range" id="calc-minutes" min="0" max="120" value="5" class="w-full">
+       <div class="flex items-center justify-between p-3 rounded-lg bg-slate-900/30 border border-slate-700/50">
+        <span class="text-slate-400 text-sm" data-i18n="minutes">Minutes:</span>
+        <span id="minutes-display" class="text-2xl font-bold text-cyan-400">5</span>
+       </div>
+      </div>
+      <div id="calc-results" class="hidden space-y-4">
+       <div class="grid grid-cols-1 gap-4 p-4 rounded-xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50">
+        <div class="space-y-2">
+         <span class="text-cyan-400 font-bold" data-i18n="daily_consumption_sim">📊 Daily Consumption:</span>
+         <div class="grid grid-cols-2 gap-2">
+          <div class="p-3 rounded-lg bg-cyan-500/20 border border-cyan-500/30">
+           <p class="text-xs text-slate-400" data-i18n="water">Water</p>
+           <p id="calc-water-display" class="text-lg font-bold text-cyan-400">0 L</p>
+          </div>
+          <div class="p-3 rounded-lg bg-emerald-500/20 border border-emerald-500/30">
+           <p class="text-xs text-slate-400" data-i18n="cost">Cost</p>
+           <p id="calc-cost-display" class="text-lg font-bold text-emerald-400">0 EGP</p>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <button id="calc-btn-calc" class="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all mt-4" data-i18n="calculate">Calculate</button>
+     </div>
+    </div>
+
+    <!-- RECORD TAB -->
+    <div id="content-add" class="space-y-5 hidden">
+     <div class="glass-card rounded-3xl p-6">
+      <h2 class="text-lg font-bold text-white mb-4" data-i18n="record_activity">📝 Record Activity</h2>
+      <div id="activity-message" class="hidden p-3 rounded-lg text-sm text-center bg-blue-500/20 border border-blue-500/30 text-blue-400 mb-4"></div>
+      <div class="space-y-4 mb-6">
+       <p class="text-sm font-bold text-cyan-400" data-i18n="select_activity">Select Activity:</p>
+       <div id="activity-buttons" class="grid grid-cols-2 gap-2">
+        <button class="activity-btn p-3 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition-all text-left" data-activity="Showering">🚿<br><span class="text-xs">Showering</span></button>
+        <button class="activity-btn p-3 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition-all text-left" data-activity="Dishwashing">🍽️<br><span class="text-xs">Dishwashing</span></button>
+        <button class="activity-btn p-3 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition-all text-left" data-activity="PlantWatering">🌿<br><span class="text-xs">Plant Water</span></button>
+        <button class="activity-btn p-3 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition-all text-left" data-activity="CarWashing">🚗<br><span class="text-xs">Car Wash</span></button>
+        <button class="activity-btn p-3 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition-all text-left" data-activity="Laundry">👕<br><span class="text-xs">Laundry</span></button>
+        <button class="activity-btn p-3 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition-all text-left" data-activity="Cleaning">🧹<br><span class="text-xs">Cleaning</span></button>
+        <button class="activity-btn p-3 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition-all text-left" data-activity="HandWashing">🧼<br><span class="text-xs">Hand Wash</span></button>
+        <button class="activity-btn p-3 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition-all text-left" data-activity="Cooking">🍳<br><span class="text-xs">Cooking</span></button>
+       </div>
+      </div>
+      <div id="activity-details" class="hidden space-y-4">
+       <h3 id="selected-activity-name" class="text-lg font-bold text-white"></h3>
+       <div class="space-y-4">
+        <label for="duration-input" class="block text-sm font-bold text-cyan-400" data-i18n="duration">Duration (minutes):</label>
+        <input type="number" id="duration-input" min="0" value="5" class="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50">
+       </div>
+       <div class="grid grid-cols-2 gap-2 p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+        <div>
+         <p class="text-xs text-slate-400" data-i18n="water_usage">Water Usage:</p>
+         <p id="calculation-wastage" class="text-xl font-bold text-cyan-400">0 L</p>
+        </div>
+        <div>
+         <p class="text-xs text-slate-400" data-i18n="estimated_cost">Estimated Cost:</p>
+         <p id="calculation-savings" class="text-xl font-bold text-emerald-400">0 EGP</p>
+        </div>
+       </div>
+       <div class="flex gap-2">
+        <button id="btn-save-activity" class="flex-1 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all" data-i18n="save_record">Save</button>
+        <button id="btn-cancel-activity" class="flex-1 py-3 rounded-xl font-bold text-white bg-slate-700 hover:bg-slate-600 transition-all" data-i18n="cancel">Cancel</button>
+       </div>
+      </div>
+     </div>
+    </div>
+
+    <!-- TIPS TAB -->
+    <div id="content-tips" class="space-y-4 hidden">
+     <h2 class="text-lg font-bold text-white mb-4" data-i18n="water_saving_tips">💡 Water Saving Tips</h2>
+     <div id="tips-container" class="space-y-3"></div>
+    </div>
+
+    <!-- ABOUT TAB -->
+    <div id="content-about" class="space-y-4 hidden">
+     <h2 class="text-lg font-bold text-white mb-4" data-i18n="about_app">About this App</h2>
+     <div class="glass-card rounded-2xl p-4">
+      <p id="app-title-about" class="text-xl font-bold text-white mb-2" data-i18n="app_title">Water Hero</p>
+      <p class="text-sm text-slate-300 mb-4" data-i18n="about_description">A comprehensive water conservation tracking application designed to help you monitor and reduce daily water consumption.</p>
+      <p class="text-xs text-slate-400" data-i18n="developer">Developer:</p>
+      <p id="developer-name" class="text-sm font-bold text-cyan-400 mb-4">Mohamed</p>
+      <p class="text-xs text-slate-400" data-i18n="version">Version: 1.0</p>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <script>
+    // Translation Dictionary
+    const translations = {
+      ar: {
+        app_title: 'الأبطال المائيون',
+        app_subtitle: '🌊 بطل حفظ المياه',
+        home: 'الرئيسية',
+        calculator: 'الحاسبة',
+        record: 'تسجيل',
+        tips: 'نصائح',
+        about: 'حول',
+        todays_consumption: '💧 استهلاك اليوم',
+        liters_water: 'لتر من الماء',
+        daily_cost: '💰 التكلفة اليومية',
+        weekly_cost: '📅 التكلفة الأسبوعية',
+        monthly_cost: '📆 التكلفة الشهرية',
+        most_consuming: '🏆 الأنشطة الأكثر استهلاكاً اليوم:',
+        activity_costs: '💰 تكاليف الأنشطة اليوم:',
+        quick_stats: '⚡ إحصائيات سريعة:',
+        total_activities: '📍 إجمالي الأنشطة',
+        top_activity: '🎯 أفضل نشاط',
+        start_now: '🚀 ابدأ الآن',
+        consumption_simulator: '🧮 محاكاة الاستهلاك',
+        select_activity: 'اختر النشاط:',
+        duration_minutes: 'المدة (دقائق):',
+        minutes: 'الدقائق:',
+        daily_consumption_sim: '📊 الاستهلاك اليومي:',
+        water: 'الماء',
+        cost: 'التكلفة',
+        calculate: 'احسب',
+        record_activity: '📝 تسجيل النشاط',
+        duration: 'المدة (دقائق):',
+        water_usage: 'استخدام الماء:',
+        estimated_cost: 'التكلفة المقدرة:',
+        save_record: 'حفظ',
+        cancel: 'إلغاء',
+        water_saving_tips: '💡 نصائح توفير المياه',
+        about_app: 'حول التطبيق',
+        about_description: 'تطبيق شامل لتتبع حفظ المياه مصمم لمساعدتك على مراقبة وتقليل استهلاك المياه اليومي.',
+        developer: 'المطور:',
+        version: 'الإصدار:',
+        perfect_duration: 'مدة مثالية!',
+        appropriate_duration: 'المدة التي قضيتها مناسبة جداً!',
+        got_it: '✨ حسناً',
+        showering: 'الاستحمام',
+        dishwashing: 'غسل الأطباق',
+        plant_watering: 'سقاية النباتات',
+        car_washing: 'غسل السيارة',
+        laundry: 'الغسيل',
+        cleaning: 'التنظيف',
+        hand_washing: 'غسل اليدين',
+        cooking: 'الطهي'
+      },
+      en: {
+        app_title: 'Water Hero',
+        app_subtitle: '🌊 Water Conservation Hero',
+        home: 'Home',
+        calculator: 'Calculator',
+        record: 'Record',
+        tips: 'Tips',
+        about: 'About',
+        todays_consumption: '💧 Today\'s Consumption',
+        liters_water: 'Liters of water',
+        daily_cost: '💰 Daily Cost',
+        weekly_cost: '📅 Weekly Cost',
+        monthly_cost: '📆 Monthly Cost',
+        most_consuming: '🏆 Most Consuming Activities Today:',
+        activity_costs: '💰 Activity Costs Today:',
+        quick_stats: '⚡ Quick Statistics:',
+        total_activities: '📍 Total Activities',
+        top_activity: '🎯 Top Activity',
+        start_now: '🚀 Start Now',
+        consumption_simulator: '🧮 Consumption Simulator',
+        select_activity: 'Select Activity:',
+        duration_minutes: 'Duration (Minutes):',
+        minutes: 'Minutes:',
+        daily_consumption_sim: '📊 Daily Consumption:',
+        water: 'Water',
+        cost: 'Cost',
+        calculate: 'Calculate',
+        record_activity: '📝 Record Activity',
+        duration: 'Duration (minutes):',
+        water_usage: 'Water Usage:',
+        estimated_cost: 'Estimated Cost:',
+        save_record: 'Save',
+        cancel: 'Cancel',
+        water_saving_tips: '💡 Water Saving Tips',
+        about_app: 'About this App',
+        about_description: 'A comprehensive water conservation tracking application designed to help you monitor and reduce daily water consumption.',
+        developer: 'Developer:',
+        version: 'Version:',
+        perfect_duration: 'Perfect Duration!',
+        appropriate_duration: 'The duration you spent is very appropriate!',
+        got_it: '✨ Got it',
+        showering: 'Showering',
+        dishwashing: 'Dishwashing',
+        plant_watering: 'Plant Watering',
+        car_washing: 'Car Washing',
+        laundry: 'Laundry',
+        cleaning: 'Cleaning',
+        hand_washing: 'Hand Washing',
+        cooking: 'Cooking'
+      },
+      fr: {
+        app_title: 'Héros de l\'Eau',
+        app_subtitle: '🌊 Héros de la Conservation de l\'Eau',
+        home: 'Accueil',
+        calculator: 'Calculatrice',
+        record: 'Enregistrement',
+        tips: 'Conseils',
+        about: 'À propos',
+        todays_consumption: '💧 Consommation d\'aujourd\'hui',
+        liters_water: 'Litres d\'eau',
+        daily_cost: '💰 Coût Quotidien',
+        weekly_cost: '📅 Coût Hebdomadaire',
+        monthly_cost: '📆 Coût Mensuel',
+        most_consuming: '🏆 Activités les Plus Consommatrices d\'Aujourd\'hui:',
+        activity_costs: '💰 Coûts des Activités d\'Aujourd\'hui:',
+        quick_stats: '⚡ Statistiques Rapides:',
+        total_activities: '📍 Total des Activités',
+        top_activity: '🎯 Activité Principale',
+        start_now: '🚀 Commencer Maintenant',
+        consumption_simulator: '🧮 Simulateur de Consommation',
+        select_activity: 'Sélectionner une Activité:',
+        duration_minutes: 'Durée (Minutes):',
+        minutes: 'Minutes:',
+        daily_consumption_sim: '📊 Consommation Quotidienne:',
+        water: 'Eau',
+        cost: 'Coût',
+        calculate: 'Calculer',
+        record_activity: '📝 Enregistrer une Activité',
+        duration: 'Durée (minutes):',
+        water_usage: 'Utilisation de l\'Eau:',
+        estimated_cost: 'Coût Estimé:',
+        save_record: 'Enregistrer',
+        cancel: 'Annuler',
+        water_saving_tips: '💡 Conseils pour Économiser l\'Eau',
+        about_app: 'À propos de cette Application',
+        about_description: 'Une application complète de suivi de la conservation de l\'eau conçue pour vous aider à surveiller et réduire votre consommation d\'eau quotidienne.',
+        developer: 'Développeur:',
+        version: 'Version:',
+        perfect_duration: 'Durée Parfaite!',
+        appropriate_duration: 'La durée que vous avez passée est très appropriée!',
+        got_it: '✨ D\'accord',
+        showering: 'Douche',
+        dishwashing: 'Lavage de la Vaisselle',
+        plant_watering: 'Arrosage des Plantes',
+        car_washing: 'Lavage de la Voiture',
+        laundry: 'Lessive',
+        cleaning: 'Nettoyage',
+        hand_washing: 'Lavage des Mains',
+        cooking: 'Cuisson'
+      }
+    };
+
+    // Tips Database
+    const tipsByLanguage = {
+      ar: [
+        '🚿 قصّر مدة استحمامك إلى 5 دقائق لتوفير 25 لتراً يومياً',
+        '🍽️ ملء الحوض بدلاً من الجري المستمر لغسل الأطباق',
+        '🚿 أغلق الدش أثناء الاستحمام والصابون',
+        '🚗 استخدم دلو وإسفنجة لغسل السيارة بدلاً من الخرطوم',
+        '👕 اغسل الملابس بأحمال كاملة فقط',
+        '🧼 أغلق الصنبور أثناء غسل اليدين والأسنان',
+        '💧 أصلح الصنابير المتسربة فوراً',
+        '🌿 اسقِ النباتات في الصباح الباكر لتقليل التبخر'
+      ],
+      en: [
+        '🚿 Shorten your shower to 5 minutes to save 25 liters daily',
+        '🍽️ Fill the sink instead of running water continuously for dishes',
+        '🚿 Close the shower while soaping up',
+        '🚗 Use a bucket and sponge to wash your car instead of a hose',
+        '👕 Wash clothes only with full loads',
+        '🧼 Close the tap while washing hands and teeth',
+        '💧 Fix leaking taps immediately',
+        '🌿 Water plants in early morning to reduce evaporation'
+      ],
+      fr: [
+        '🚿 Raccourcissez votre douche à 5 minutes pour économiser 25 litres par jour',
+        '🍽️ Remplissez l\'évier au lieu de faire couler l\'eau en continu',
+        '🚿 Fermez la douche pendant le savonnage',
+        '🚗 Utilisez un seau et une éponge pour laver votre voiture au lieu d\'un tuyau',
+        '👕 Lavez les vêtements uniquement avec des charges complètes',
+        '🧼 Fermez le robinet en vous lavant les mains et les dents',
+        '💧 Réparez les robinets qui fuient immédiatement',
+        '🌿 Arrosez les plantes tôt le matin pour réduire l\'évaporation'
+      ]
+    };
+
+    // Activity Catalog
+    const ActivityCatalog = {
+      Showering: { label: '🚿 Showering', icon: '🚿', baseWaterPerMinute: 9.5, minTime: 2, maxTime: 8 },
+      Dishwashing: { label: '🍽️ Dishwashing', icon: '🍽️', baseWaterPerMinute: 11, minTime: 3, maxTime: 20 },
+      PlantWatering: { label: '🌿 Plant Watering', icon: '🌿', baseWaterPerMinute: 8, minTime: 5, maxTime: 40 },
+      CarWashing: { label: '🚗 Car Washing', icon: '🚗', baseWaterPerMinute: 80, minTime: 5, maxTime: 30 },
+      Laundry: { label: '👕 Laundry', icon: '👕', baseWaterPerMinute: 45, minTime: 25, maxTime: 60 },
+      Cleaning: { label: '🧹 Cleaning', icon: '🧹', baseWaterPerMinute: 6, minTime: 5, maxTime: 45 },
+      HandWashing: { label: '🧼 Hand Washing', icon: '🧼', baseWaterPerMinute: 2, minTime: 0.5, maxTime: 3 },
+      Cooking: { label: '🍳 Cooking', icon: '🍳', baseWaterPerMinute: 5, minTime: 5, maxTime: 60 }
+    };
+
+    let currentLanguage = localStorage.getItem('waterHeroLang') || getDeviceLanguage();
+    let allRecords = [];
+    let selectedActivity = null;
+    let config = { app_title: 'Water Hero', water_price_per_liter: 0.008, developer_name: 'Mohamed' };
+    const defaultConfig = { app_title: 'Water Hero', water_price_per_liter: 0.008, developer_name: 'Mohamed' };
+
+    // Detect device language
+    function getDeviceLanguage() {
+      const lang = navigator.language.substring(0, 2).toLowerCase();
+      if (lang === 'ar') return 'ar';
+      if (lang === 'fr') return 'fr';
+      return 'en';
+    }
+
+    // Change Language
+    function setLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('waterHeroLang', lang);
+      
+      const html = document.documentElement;
+      html.lang = lang;
+      html.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      
+      // Update all translatable elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        el.textContent = translations[lang][key] || el.textContent;
+      });
+      
+      // Update language buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`lang-${lang}`).classList.add('active');
+      
+      // Update activity buttons text
+      updateActivityButtonLabels();
+      updateTips();
+    }
+
+    function updateActivityButtonLabels() {
+      const activities = {
+        Showering: translations[currentLanguage].showering,
+        Dishwashing: translations[currentLanguage].dishwashing,
+        PlantWatering: translations[currentLanguage].plant_watering,
+        CarWashing: translations[currentLanguage].car_washing,
+        Laundry: translations[currentLanguage].laundry,
+        Cleaning: translations[currentLanguage].cleaning,
+        HandWashing: translations[currentLanguage].hand_washing,
+        Cooking: translations[currentLanguage].cooking
+      };
+      
+      document.querySelectorAll('.activity-btn').forEach(btn => {
+        const key = btn.dataset.activity;
+        btn.innerHTML = ActivityCatalog[key].icon + '<br><span class="text-xs">' + activities[key] + '</span>';
+      });
+    }
+
+    function updateTips() {
+      const tipsContainer = document.getElementById('tips-container');
+      tipsContainer.innerHTML = '';
+      tipsByLanguage[currentLanguage].forEach(tip => {
+        const tipEl = document.createElement('div');
+        tipEl.className = 'glass-card rounded-2xl p-4 tip-card';
+        tipEl.textContent = tip;
+        tipsContainer.appendChild(tipEl);
+      });
+    }
+
+    // Load Local Storage
+    function loadFromLocalStorage() {
+      const stored = localStorage.getItem('waterHeroRecords');
+      if (stored) allRecords = JSON.parse(stored);
+    }
+
+    // Save to Local Storage
+    function saveToLocalStorage() {
+      localStorage.setItem('waterHeroRecords', JSON.stringify(allRecords));
+    }
+
+    // Tab Navigation
+    function showTab(tabName) {
+      document.querySelectorAll('[id^="content-"]').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('[id^="tab-"]').forEach(el => {
+        el.classList.remove('bg-cyan-500/20', 'text-cyan-400', 'border-cyan-500/30');
+        el.classList.add('text-slate-400', 'hover:text-slate-300');
+      });
+      
+      document.getElementById('content-' + tabName).classList.remove('hidden');
+      document.getElementById('tab-' + tabName).classList.add('bg-cyan-500/20', 'text-cyan-400', 'border-cyan-500/30');
+      document.getElementById('tab-' + tabName).classList.remove('text-slate-400', 'hover:text-slate-300');
+      
+      if (tabName === 'home') updateAllDisplays();
+    }
+
+    // Update all displays
+    function updateAllDisplays() {
+      const today = new Date().toISOString().split('T')[0];
+      const todayRecords = allRecords.filter(r => r.date === today);
+      
+      const totalWater = todayRecords.reduce((sum, r) => sum + r.wastageAmount, 0);
+      const totalCost = todayRecords.reduce((sum, r) => sum + r.cost, 0);
+      const weeklyCost = allRecords.filter(r => {
+        const recordDate = new Date(r.date);
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        return recordDate >= weekAgo;
+      }).reduce((sum, r) => sum + r.cost, 0);
+      const monthlyCost = allRecords.filter(r => {
+        const recordDate = new Date(r.date);
+        const monthAgo = new Date();
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        return recordDate >= monthAgo;
+      }).reduce((sum, r) => sum + r.cost, 0);
+      
+      document.getElementById('today-wastage').textContent = Math.round(totalWater);
+      document.getElementById('cost-daily').textContent = totalCost.toFixed(2) + ' EGP';
+      document.getElementById('cost-weekly').textContent = weeklyCost.toFixed(2) + ' EGP';
+      document.getElementById('cost-monthly').textContent = monthlyCost.toFixed(2) + ' EGP';
+      
+      // Activity Chart
+      const activityCounts = {};
+      todayRecords.forEach(r => {
+        activityCounts[r.activity] = (activityCounts[r.activity] || 0) + r.wastageAmount;
+      });
+      
+      const activityChart = document.getElementById('activity-chart');
+      activityChart.innerHTML = '';
+      Object.entries(activityCounts).sort((a, b) => b[1] - a[1]).forEach(([activity, amount]) => {
+        const percent = (amount / (totalWater || 1)) * 100;
+        const actObj = ActivityCatalog[activity];
+        const el = document.createElement('div');
+        el.className = 'chart-item p-3 rounded-lg bg-slate-800/30 border border-slate-700/50';
+        el.innerHTML = `<div class="flex justify-between mb-2"><span>${actObj.icon} ${actObj.label}</span><span class="text-cyan-400 font-bold">${Math.round(amount)}L</span></div><div class="w-full bg-slate-700/30 rounded-full h-2"><div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-2 rounded-full" style="width: ${percent}%"></div></div>`;
+        activityChart.appendChild(el);
+      });
+      
+      // Savings Chart
+      const savingsChart = document.getElementById('savings-chart');
+      savingsChart.innerHTML = '';
+      Object.entries(activityCounts).sort((a, b) => {
+        const costA = (allRecords.filter(r => r.activity === a[0]).reduce((sum, r) => sum + r.cost, 0));
+        const costB = (allRecords.filter(r => r.activity === b[0]).reduce((sum, r) => sum + r.cost, 0));
+        return costB - costA;
+      }).forEach(([activity]) => {
+        const actObj = ActivityCatalog[activity];
+        const actCost = allRecords.filter(r => r.activity === activity && r.date === today).reduce((sum, r) => sum + r.cost, 0);
+        const el = document.createElement('div');
+        el.className = 'chart-item p-3 rounded-lg bg-slate-800/30 border border-slate-700/50';
+        el.innerHTML = `<div class="flex justify-between"><span>${actObj.icon} ${actObj.label}</span><span class="text-emerald-400 font-bold">${actCost.toFixed(2)} EGP</span></div>`;
+        savingsChart.appendChild(el);
+      });
+      
+      document.getElementById('total-activities').textContent = todayRecords.length;
+      const topActivity = Object.entries(activityCounts).length > 0 ? Object.entries(activityCounts).sort((a, b) => b[1] - a[1])[0] : null;
+      document.getElementById('best-activity').textContent = topActivity ? ActivityCatalog[topActivity[0]].icon : '-';
+    }
+
+    // Time Message
+    function showTimeMessage(isAppropriate, activityLabel, duration) {
+      const modal = document.getElementById('time-message-modal');
+      const title = document.getElementById('message-title');
+      const text = document.getElementById('message-text');
+      const icon = document.getElementById('message-icon');
+      
+      if (isAppropriate) {
+        icon.textContent = '✅';
+        title.textContent = translations[currentLanguage].perfect_duration;
+        text.textContent = translations[currentLanguage].appropriate_duration;
+      } else {
+        icon.textContent = '⚠️';
+        title.textContent = 'Long Duration!';
+        text.textContent = `Your ${activityLabel} duration was ${duration} minutes - consider reducing it!`;
+      }
+      
+      modal.classList.remove('hidden');
+    }
+
+    function closeTimeMessage() {
+      document.getElementById('time-message-modal').classList.add('hidden');
+    }
+
+    // Calculator functions
+    document.getElementById('calc-minutes').addEventListener('input', (e) => {
+      document.getElementById('minutes-display').textContent = e.target.value;
+      const activity = document.getElementById('calc-activity').value;
+      if (activity) {
+        const duration = parseFloat(e.target.value);
+        const actObj = ActivityCatalog[activity];
+        const water = actObj.baseWaterPerMinute * duration;
+        const cost = water * 0.008;
+        document.getElementById('calc-water-display').textContent = Math.round(water) + ' L';
+        document.getElementById('calc-cost-display').textContent = cost.toFixed(2) + ' EGP';
+        document.getElementById('calc-results').classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('calc-activity').addEventListener('change', (e) => {
+      if (e.target.value) {
+        const activity = e.target.value;
+        const actObj = ActivityCatalog[activity];
+        const duration = parseFloat(document.getElementById('calc-minutes').value);
+        const water = actObj.baseWaterPerMinute * duration;
+        const cost = water * 0.008;
+        document.getElementById('calc-water-display').textContent = Math.round(water) + ' L';
+        document.getElementById('calc-cost-display').textContent = cost.toFixed(2) + ' EGP';
+        document.getElementById('calc-results').classList.remove('hidden');
+      }
+    });
+
+    // Tab buttons
+    ['home', 'calculator', 'add', 'tips', 'about'].forEach(tab => {
+      document.getElementById(`tab-${tab}`).addEventListener('click', () => showTab(tab));
+    });
+
+    // Language buttons
+    document.getElementById('lang-ar').addEventListener('click', () => setLanguage('ar'));
+    document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+    document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+
+    // Start button
+    document.getElementById('btn-start').addEventListener('click', () => showTab('add'));
+
+    // Activity selection
+    document.querySelectorAll('.activity-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.activity-btn').forEach(b => {
+          b.classList.remove('active', 'ring-2', 'ring-cyan-400', 'bg-cyan-500/20', 'border-cyan-500/50');
+        });
+        
+        btn.classList.add('active', 'ring-2', 'ring-cyan-400', 'bg-cyan-500/20', 'border-cyan-500/50');
+        
+        const activityKey = btn.dataset.activity;
+        const activityObj = ActivityCatalog[activityKey];
+        selectedActivity = {
+          key: activityKey,
+          label: activityObj.label,
+          icon: activityObj.icon,
+          baseWater: activityObj.baseWaterPerMinute,
+          minTime: activityObj.minTime,
+          maxTime: activityObj.maxTime
+        };
+        
+        document.getElementById('activity-details').classList.remove('hidden');
+        document.getElementById('selected-activity-name').textContent = selectedActivity.label;
+        document.getElementById('activity-message').classList.add('hidden');
+        document.getElementById('duration-input').value = 5;
+        updateActivityCalculations();
+      });
+    });
+
+    function updateActivityCalculations() {
+      if (!selectedActivity) return;
+      const duration = parseFloat(document.getElementById('duration-input').value) || 0;
+      const wastageAmount = selectedActivity.baseWater * duration;
+      const cost = wastageAmount * 0.008;
+      document.getElementById('calculation-wastage').textContent = Math.round(wastageAmount) + ' L';
+      document.getElementById('calculation-savings').textContent = cost.toFixed(2) + ' EGP';
+    }
+
+    document.getElementById('duration-input').addEventListener('input', updateActivityCalculations);
+
+    // Save activity
+    document.getElementById('btn-save-activity').addEventListener('click', () => {
+      if (!selectedActivity) return;
+      
+      const duration = parseFloat(document.getElementById('duration-input').value) || 0;
+      
+      if (duration <= 0) {
+        const msg = document.getElementById('activity-message');
+        msg.className = 'p-3 rounded-lg text-sm text-center bg-red-500/20 border border-red-500/30 text-red-400';
+        msg.textContent = '❌ ' + translations[currentLanguage].duration;
+        msg.classList.remove('hidden');
+        return;
+      }
+      
+      const wastageAmount = selectedActivity.baseWater * duration;
+      const cost = wastageAmount * 0.008;
+      const isTimeAppropriate = duration >= selectedActivity.minTime && duration <= selectedActivity.maxTime;
+      
+      const newRecord = {
+        id: Date.now().toString(),
+        date: new Date().toISOString().split('T')[0],
+        activity: selectedActivity.key,
+        duration: duration,
+        wastageAmount: wastageAmount,
+        cost: cost,
+        timeAppropriate: isTimeAppropriate
+      };
+      
+      allRecords.push(newRecord);
+      saveToLocalStorage();
+      updateAllDisplays();
+      
+      showTimeMessage(isTimeAppropriate, selectedActivity.label, duration);
+      
+      document.getElementById('duration-input').value = 5;
+      document.querySelectorAll('.activity-btn').forEach(b => {
+        b.classList.remove('active', 'ring-2', 'ring-cyan-400', 'bg-cyan-500/20', 'border-cyan-500/50');
+      });
+      document.getElementById('activity-details').classList.add('hidden');
+      selectedActivity = null;
+      
+      setTimeout(() => showTab('home'), 2000);
+    });
+
+    document.getElementById('btn-cancel-activity').addEventListener('click', () => {
+      document.getElementById('activity-details').classList.add('hidden');
+      document.querySelectorAll('.activity-btn').forEach(b => {
+        b.classList.remove('active', 'ring-2', 'ring-cyan-400', 'bg-cyan-500/20', 'border-cyan-500/50');
+      });
+      selectedActivity = null;
+    });
+
+    // Initialize
+    loadFromLocalStorage();
+    setLanguage(currentLanguage);
+    updateAllDisplays();
+  </script>
+ </body>
+</html>
