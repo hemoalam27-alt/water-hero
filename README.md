@@ -26,4 +26,51 @@ A smart web application that helps you track daily water consumption and calcula
 | 👕 Laundry | 🧹 Cleaning |
 | 🧼 Hand Washing | 🍳 Cooking |
 
+## 🚀 How to Use 
 
+1. **Open the Application** — Use the HTML file directly in your browser without any installation.
+2. **Select an Activity** — Click on a water activity from the available activities list.
+3. **Enter Duration** — Specify the number of minutes the activity took.
+4. **Get Statistics** — View detailed reports about your consumption and costs.
+
+## 🛠️ Technical Requirements
+
+### Requirements
+
+- Modern browser (Chrome, Firefox, Safari, Edge)
+- JavaScript enabled
+- Local Storage support
+- Screen minimum 320px width
+
+### Technologies Used
+
+- HTML5 + CSS3 + JavaScript
+- Tailwind CSS for styling
+- Bilingual support (Arabic & English)
+- Secure local data storage
+
+## 📥 Installation & Usage
+
+- ✅ **Very Easy:** Save the HTML file and open it directly in your browser.
+- ✅ **No Internet Required:** Works completely offline.
+- ✅ **Safe and Fast:** Your data is stored locally on your device only.
+- ✅ **Full Compatibility:** Works on phones, tablets, and computers.
+
+## 🔮 Future Plans
+
+- 📱 **Android APK** — In the future, Water Hero will be developed as a dedicated Android APK for a smoother and more convenient mobile experience.
+- 🚀 **Continuous Development** — More features, improvements, and smart tools will be added in future versions.
+
+## 🌊 Start Saving Water Today!
+
+With Water Hero, you can monitor water consumption, calculate costs, and protect the environment. A smart, simple, and fast application without complications.
+
+🚀 **Get Started Now**
+
+---
+
+💧 **Water Hero - Smart Water Consumption Tracker**
+
+*An intelligent application for water conservation and waste reduction*
+
+© All Rights Reserved
