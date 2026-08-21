@@ -1,5 +1,398 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!doctype html>
-<html lang="ar" dir="rtl" class="h-full"></html>
+<!doctype html>
+<html lang="en" dir="ltr" class="h-full">
  <head>
- <meta charset="UTF-8">
- 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Hero</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&amp;display=swap" rel="stylesheet">
+  <!-- ربط ملف التنسيقات الخارجية -->
+  <link rel="stylesheet" href="style.css">
+ </head>
+ <body class="h-full bg-slate-950 text-white overflow-auto">
+  <div class="min-h-full w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+   <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
+   </div>
+   <div class="relative z-10 max-w-md mx-auto px-4 py-6">
+    <div class="flex gap-1 mb-6 bg-slate-900/50 rounded-2xl p-1 backdrop-blur-sm overflow-x-auto sticky top-6 z-50">
+     <button id="tab-home" class="flex-1 min-w-fit py-2 px-3 rounded-lg font-medium text-xs sm:text-sm transition-all bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 whitespace-nowrap">🏠 Home</button>
+     <button id="tab-calculator" class="flex-1 min-w-fit py-2 px-3 rounded-lg font-medium text-xs sm:text-sm transition-all text-slate-400 hover:text-slate-300 whitespace-nowrap">🧮 Calculator</button>
+     <button id="tab-add" class="flex-1 min-w-fit py-2 px-3 rounded-lg font-medium text-xs sm:text-sm transition-all text-slate-400 hover:text-slate-300 whitespace-nowrap">➕ Record</button>
+     <button id="tab-tips" class="flex-1 min-w-fit py-2 px-3 rounded-lg font-medium text-xs sm:text-sm transition-all text-slate-400 hover:text-slate-300 whitespace-nowrap">💡 Tips</button>
+     <button id="tab-about" class="flex-1 min-w-fit py-2 px-3 rounded-lg font-medium text-xs sm:text-sm transition-all text-slate-400 hover:text-slate-300 whitespace-nowrap">ℹ️ About</button>
+    </div>
+
+       <!-- Modal -->
+    <div id="time-message-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4">
+     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+     <div id="time-message-content" class="relative glass-card rounded-3xl p-6 max-w-sm w-full animate-slide-in">
+      <div class="text-center space-y-4">
+       <div id="message-icon" class="text-6xl mb-4">✅</div>
+       <h3 id="message-title" class="text-xl font-bold text-white">Perfect Duration!</h3>
+       <p id="message-text" class="text-sm text-slate-300">The duration you spent is very appropriate!</p>
+       <button id="btn-close-modal" class="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all">✨ Got it</button>
+      </div>
+     </div>
+    </div>
+
+    <!-- Content Home -->
+    <div id="content-home" class="space-y-5">
+     <header class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-3">
+       <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center neon-glow">
+        <svg class="w-7 h-7 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+       </div>
+       <div>
+        <h1 id="app-title" class="text-xl font-bold text-white">Water Hero</h1>
+        <p class="text-xs text-cyan-400">🌊 Water Conservation Hero</p>
+       </div>
+      </div>
+     </header>
+     <div class="glass-card rounded-3xl p-6 animate-pulse-glow">
+      <div class="text-center mb-4">
+       <p class="text-slate-400 text-sm mb-2">💧 Today's Consumption</p>
+       <p id="today-wastage" class="text-4xl font-bold text-white mb-1">0</p>
+       <p class="text-cyan-400 text-sm">Liters of water</p>
+      </div>
+      <div class="grid grid-cols-3 gap-2 text-center">
+       <div class="p-3 rounded-xl bg-slate-800/30 border border-slate-700/50">
+        <p class="text-slate-400 text-xs mb-1">💰 Daily Cost</p>
+        <p id="cost-daily" class="text-lg font-bold text-cyan-400">0 EGP</p>
+       </div>
+       <div class="p-3 rounded-xl bg-slate-800/30 border border-slate-700/50">
+        <p class="text-slate-400 text-xs mb-1">📅 Weekly Cost</p>
+        <p id="cost-weekly" class="text-lg font-bold text-emerald-400">0 EGP</p>
+       </div>
+       <div class="p-3 rounded-xl bg-slate-800/30 border border-slate-700/50">
+        <p class="text-slate-400 text-xs mb-1">📆 Monthly Cost</p>
+        <p id="cost-monthly" class="text-lg font-bold text-orange-400">0 EGP</p>
+       </div>
+      </div>
+     </div>
+     <div class="glass-card rounded-2xl p-4 space-y-3">
+      <p class="text-sm font-bold text-white">🏆 Most Consuming Activities Today:</p>
+      <div id="activity-chart" class="space-y-2"></div>
+     </div>
+     <div class="glass-card rounded-2xl p-4 space-y-3">
+      <p class="text-sm font-bold text-white">💰 Activity Costs Today:</p>
+      <div id="savings-chart" class="space-y-2"></div>
+     </div>
+     <div class="glass-card rounded-2xl p-4 space-y-3">
+      <p class="text-sm font-bold text-white">⚡ Quick Statistics:</p>
+      <div class="grid grid-cols-2 gap-2">
+       <div class="p-3 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-cyan-500/30">
+        <p class="text-xs text-slate-400">📍 Total Activities</p>
+        <p id="total-activities" class="text-2xl font-bold text-cyan-400">0</p>
+       </div>
+       <div class="p-3 rounded-lg bg-gradient-to-br from-emerald-500/20 to-green-500/20 border border-emerald-500/30">
+        <p class="text-xs text-slate-400">🎯 Top Activity</p>
+        <p id="best-activity" class="text-lg font-bold text-emerald-400">-</p>
+       </div>
+      </div>
+     </div>
+     <button id="btn-start" class="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all neon-glow text-center flex items-center justify-center gap-2 text-lg">🚀 Start Now</button>
+    </div>
+
+    <!-- Content Calculator -->
+    <div id="content-calculator" class="space-y-5 hidden">
+     <div class="glass-card rounded-3xl p-6">
+      <h2 class="text-lg font-bold text-white mb-6">🧮 Consumption Simulator</h2>
+      <div class="space-y-4 mb-6">
+       <label class="block text-sm font-bold text-cyan-400">Select Activity:</label>
+       <select id="calc-activity" class="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50">
+        <option value="">-- Select Activity --</option>
+        <option value="Showering">🚿 Showering</option>
+        <option value="Dishwashing">🍽️ Dishwashing</option>
+        <option value="PlantWatering">🌿 Plant Watering</option>
+        <option value="CarWashing">🚗 Car Washing</option>
+        <option value="Laundry">👕 Laundry</option>
+        <option value="Cleaning">🧹 Cleaning</option>
+        <option value="HandWashing">🧼 Hand Washing</option>
+        <option value="Cooking">🍳 Cooking</option>
+       </select>
+      </div>
+      <div class="space-y-4 mb-6">
+       <label for="calc-minutes" class="block text-sm font-bold text-cyan-400">Duration (Minutes):</label>
+       <input type="range" id="calc-minutes" min="0" max="120" value="5" class="w-full">
+       <div class="flex items-center justify-between p-3 rounded-lg bg-slate-900/30 border border-slate-700/50">
+        <span class="text-slate-400 text-sm">Minutes:</span>
+        <span id="minutes-display" class="text-2xl font-bold text-cyan-400">5</span>
+       </div>
+      </div>
+      <div id="calc-results" class="hidden space-y-4">
+       <div class="grid grid-cols-1 gap-4 p-4 rounded-xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50">
+        <div class="space-y-2">
+         <span class="text-cyan-400 font-bold">📊 Daily Consumption:</span>
+         <div class="grid grid-cols-2 gap-2">
+          <div class="p-3 rounded-lg bg-cyan-500/20 border border-cyan-500/30">
+           <p class="text-xs text-slate-400">Water</p>
+           <p id="calc-daily-water" class="text-2xl font-bold text-cyan-400">0 L</p>
+          </div>
+          <div class="p-3 rounded-lg bg-cyan-500/20 border border-cyan-500/30">
+           <p class="text-xs text-slate-400">Cost</p>
+           <p id="calc-daily-cost" class="text-2xl font-bold text-cyan-400">0 EGP</p>
+          </div>
+         </div>
+        </div>
+        <div class="space-y-2">
+         <span class="text-emerald-400 font-bold">📈 Weekly Consumption:</span>
+         <div class="grid grid-cols-2 gap-2">
+          <div class="p-3 rounded-lg bg-emerald-500/20 border border-emerald-500/30">
+           <p class="text-xs text-slate-400">Water</p>
+           <p id="calc-weekly-water" class="text-2xl font-bold text-emerald-400">0 L</p>
+          </div>
+          <div class="p-3 rounded-lg bg-emerald-500/20 border border-emerald-500/30">
+           <p class="text-xs text-slate-400">Cost</p>
+           <p id="calc-weekly-cost" class="text-2xl font-bold text-emerald-400">0 EGP</p>
+          </div>
+         </div>
+        </div>
+        <div class="space-y-2">
+         <span class="text-orange-400 font-bold">📅 Monthly Consumption:</span>
+         <div class="grid grid-cols-2 gap-2">
+          <div class="p-3 rounded-lg bg-orange-500/20 border border-orange-500/30">
+           <p class="text-xs text-slate-400">Water</p>
+           <p id="calc-monthly-water" class="text-2xl font-bold text-orange-400">0 L</p>
+          </div>
+          <div class="p-3 rounded-lg bg-orange-500/20 border border-orange-500/30">
+           <p class="text-xs text-slate-400">Cost</p>
+           <p id="calc-monthly-cost" class="text-2xl font-bold text-orange-400">0 EGP</p>
+          </div>
+         </div>
+        </div>
+        <div class="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
+         <p id="calc-comparison" class="text-center text-sm text-slate-300"></p>
+        </div>
+       </div>
+       <div id="calc-error" class="hidden p-3 rounded-lg text-sm text-center bg-red-500/20 border border-red-500/30 text-red-400"></div>
+      </div>
+     </div>
+    </div>
+
+    <!-- Content Add -->
+    <div id="content-add" class="space-y-5 hidden">
+     <div class="glass-card rounded-3xl p-6">
+      <h2 class="text-lg font-bold text-white mb-6">➕ Log Your Activity</h2>
+      <div id="activity-message" class="hidden p-3 rounded-lg text-sm text-center bg-blue-500/20 border border-blue-500/30 text-blue-400 mb-4">Select an activity below</div>
+      <div class="grid grid-cols-2 gap-2 mb-6">
+       <button class="activity-btn p-3 rounded-lg bg-slate-800/30 border border-slate-700/50 hover:border-cyan-500/50 transition-all" data-activity="Showering" data-icon="🚿" data-base-water="15">
+        <div class="text-2xl mb-2">🚿</div>
+        <p class="text-xs font-bold text-white">Showering</p>
+       </button>
+       <button class="activity-btn p-3 rounded-lg bg-slate-800/30 border border-slate-700/50 hover:border-cyan-500/50 transition-all" data-activity="Dishwashing" data-icon="🍽️" data-base-water="12">
+        <div class="text-2xl mb-2">🍽️</div>
+        <p class="text-xs font-bold text-white">Dishwashing</p>
+       </button>
+       <button class="activity-btn p-3 rounded-lg bg-slate-800/30 border border-slate-700/50 hover:border-cyan-500/50 transition-all" data-activity="PlantWatering" data-icon="🌿" data-base-water="8">
+        <div class="text-2xl mb-2">🌿</div>
+        <p class="text-xs font-bold text-white">Plant Watering</p>
+       </button>
+       <button class="activity-btn p-3 rounded-lg bg-slate-800/30 border border-slate-700/50 hover:border-cyan-500/50 transition-all" data-activity="CarWashing" data-icon="🚗" data-base-water="20">
+        <div class="text-2xl mb-2">🚗</div>
+        <p class="text-xs font-bold text-white">Car Washing</p>
+       </button>
+       <button class="activity-btn p-3 rounded-lg bg-slate-800/30 border border-slate-700/50 hover:border-cyan-500/50 transition-all" data-activity="Laundry" data-icon="👕" data-base-water="18">
+        <div class="text-2xl mb-2">👕</div>
+        <p class="text-xs font-bold text-white">Laundry</p>
+       </button>
+       <button class="activity-btn p-3 rounded-lg bg-slate-800/30 border border-slate-700/50 hover:border-cyan-500/50 transition-all" data-activity="Cleaning" data-icon="🧹" data-base-water="10">
+        <div class="text-2xl mb-2">🧹</div>
+        <p class="text-xs font-bold text-white">Cleaning</p>
+       </button>
+       <button class="activity-btn p-3 rounded-lg bg-slate-800/30 border border-slate-700/50 hover:border-cyan-500/50 transition-all" data-activity="HandWashing" data-icon="🧼" data-base-water="3">
+        <div class="text-2xl mb-2">🧼</div>
+        <p class="text-xs font-bold text-white">Hand Washing</p>
+       </button>
+       <button class="activity-btn p-3 rounded-lg bg-slate-800/30 border border-slate-700/50 hover:border-cyan-500/50 transition-all" data-activity="Cooking" data-icon="🍳" data-base-water="6">
+        <div class="text-2xl mb-2">🍳</div>
+        <p class="text-xs font-bold text-white">Cooking</p>
+       </button>
+      </div>
+      <div id="activity-details" class="hidden space-y-4">
+       <div class="p-4 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30">
+        <p class="text-sm text-slate-400 mb-2">Selected Activity:</p>
+        <p id="selected-activity-name" class="text-2xl font-bold text-cyan-400"></p>
+       </div>
+       <div class="space-y-2">
+        <label for="duration-input" class="block text-sm font-bold text-cyan-400">Activity Duration (Minutes):</label>
+        <input type="number" id="duration-input" min="0" value="5" class="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50">
+       </div>
+       <div class="grid grid-cols-2 gap-2">
+        <div class="p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+         <p class="text-xs text-slate-400">Water Consumed</p>
+         <p id="calculation-wastage" class="text-xl font-bold text-cyan-400">0 L</p>
+        </div>
+        <div class="p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+         <p class="text-xs text-slate-400">Expected Cost</p>
+         <p id="calculation-savings" class="text-xl font-bold text-emerald-400">0 EGP</p>
+        </div>
+       </div>
+       <div class="flex gap-2">
+        <button id="btn-save-activity" class="flex-1 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all">✅ Save Activity</button>
+        <button id="btn-cancel-activity" class="flex-1 py-3 rounded-xl font-bold text-slate-400 bg-slate-800/50 hover:bg-slate-800 transition-all border border-slate-700">❌ Cancel</button>
+       </div>
+      </div>
+     </div>
+    </div>
+
+    <!-- Content Tips -->
+    <div id="content-tips" class="space-y-5 hidden">
+     <div class="glass-card rounded-3xl p-6">
+      <h2 class="text-lg font-bold text-white mb-2">💡 Water Conservation Tips</h2>
+      <p class="text-sm text-slate-400 mb-6">Discover how to save water and money at the same time!</p>
+      <div class="space-y-4">
+       <div class="tip-card glass-card rounded-2xl p-4">
+        <div class="flex items-start gap-3">
+         <div class="text-3xl">🚿</div>
+         <div class="flex-1">
+          <h3 class="font-bold text-white mb-2">Shorten Shower Time</h3>
+          <p class="text-sm text-slate-300 mb-3">Reduce shower duration from 15 minutes to 5 minutes:</p>
+          <div class="grid grid-cols-2 gap-2">
+           <div class="p-2 rounded-lg bg-cyan-500/20 border border-cyan-500/30">
+            <p class="text-xs text-slate-400">Money Saved</p>
+            <p class="text-lg font-bold text-cyan-400">1.20 EGP</p>
+           </div>
+           <div class="p-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30">
+            <p class="text-xs text-slate-400">Daily Water Saved</p>
+            <p class="text-lg font-bold text-emerald-400">150.0 L</p>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="tip-card glass-card rounded-2xl p-4">
+        <div class="flex items-start gap-3">
+         <div class="text-3xl">🚗</div>
+         <div class="flex-1">
+          <h3 class="font-bold text-white mb-2">Bucket Car Washing</h3>
+          <p class="text-sm text-slate-300 mb-3">Use bucket (10 mins) instead of hose (30 mins):</p>
+          <div class="grid grid-cols-2 gap-2">
+           <div class="p-2 rounded-lg bg-cyan-500/20 border border-cyan-500/30">
+            <p class="text-xs text-slate-400">Money Saved</p>
+            <p class="text-lg font-bold text-cyan-400">3.20 EGP</p>
+           </div>
+           <div class="p-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30">
+            <p class="text-xs text-slate-400">Daily Water Saved</p>
+            <p class="text-lg font-bold text-emerald-400">400.0 L</p>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="tip-card glass-card rounded-2xl p-4">
+        <div class="flex items-start gap-3">
+         <div class="text-3xl">🍽️</div>
+         <div class="flex-1">
+          <h3 class="font-bold text-white mb-2">Sink Dishwashing</h3>
+          <p class="text-sm text-slate-300 mb-3">Use filled sink basin vs continuous running tap:</p>
+          <div class="grid grid-cols-2 gap-2">
+           <div class="p-2 rounded-lg bg-cyan-500/20 border border-cyan-500/30">
+            <p class="text-xs text-slate-400">Money Saved</p>
+            <p class="text-lg font-bold text-cyan-400">0.67 EGP</p>
+           </div>
+           <div class="p-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30">
+            <p class="text-xs text-slate-400">Daily Water Saved</p>
+            <p class="text-lg font-bold text-emerald-400">84.0 L</p>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="tip-card glass-card rounded-2xl p-4">
+        <div class="flex items-start gap-3">
+         <div class="text-3xl">🌿</div>
+         <div class="flex-1">
+          <h3 class="font-bold text-white mb-2">Smart Plant Watering</h3>
+          <p class="text-sm text-slate-300 mb-3">Reuse leftover drinking/grey water for garden:</p>
+          <div class="grid grid-cols-2 gap-2">
+           <div class="p-2 rounded-lg bg-cyan-500/20 border border-cyan-500/30">
+            <p class="text-xs text-slate-400">Money Saved</p>
+            <p class="text-lg font-bold text-cyan-400">0.64 EGP</p>
+           </div>
+           <div class="p-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30">
+            <p class="text-xs text-slate-400">Daily Water Saved</p>
+            <p class="text-lg font-bold text-emerald-400">80.0 L</p>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="tip-card glass-card rounded-2xl p-4">
+        <div class="flex items-start gap-3">
+         <div class="text-3xl">🧼</div>
+         <div class="flex-1">
+          <h3 class="font-bold text-white mb-2">Tap off Hand Washing</h3>
+          <p class="text-sm text-slate-300 mb-3">Turn off tap while applying soap (30s vs 2m):</p>
+          <div class="grid grid-cols-2 gap-2">
+           <div class="p-2 rounded-lg bg-cyan-500/20 border border-cyan-500/30">
+            <p class="text-xs text-slate-400">Money Saved</p>
+            <p class="text-lg font-bold text-cyan-400">0.036 EGP</p>
+           </div>
+           <div class="p-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30">
+            <p class="text-xs text-slate-400">Daily Water Saved</p>
+            <p class="text-lg font-bold text-emerald-400">4.5 L</p>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="glass-card rounded-2xl p-4 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30">
+        <div class="text-center">
+         <p class="text-sm text-slate-400 mb-2">📊 Applying all 5 conservation tips:</p>
+         <div class="grid grid-cols-2 gap-3">
+          <div>
+           <p class="text-2xl font-bold text-cyan-400">718.5</p>
+           <p class="text-xs text-slate-300">L / day saved</p>
+          </div>
+          <div>
+           <p class="text-2xl font-bold text-emerald-400">5.748 EGP</p>
+           <p class="text-xs text-slate-300">Daily financial saved</p>
+          </div>
+         </div>
+         <p class="text-xs text-slate-400 mt-3">= 172.44 EGP monthly saved 🎉</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+
+    <!-- Content About -->
+    <div id="content-about" class="space-y-5 hidden">
+     <div class="glass-card rounded-3xl p-6">
+      <h2 class="text-lg font-bold text-white mb-4">ℹ️ About the App</h2>
+      <div class="space-y-4">
+       <div class="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50">
+        <h3 id="app-title-about" class="text-lg font-bold text-cyan-400 mb-2">Water Hero</h3>
+        <p class="text-sm text-slate-300">A smart application designed to help you track domestic water consumption, calculate associated financial costs, and evaluate activity duration against recommended limits to conserve water resources.</p>
+       </div>
+       <div class="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50">
+        <h3 class="text-lg font-bold text-cyan-400 mb-2">🎯 Key Features:</h3>
+        <ul class="text-sm text-slate-300 space-y-2">
+         <li>✅ Log daily activities and track water consumption</li>
+         <li>✅ Interactive simulator to estimate consumption and costs</li>
+         <li>✅ Actionable water conservation tips</li>
+         <li>✅ Detailed daily, weekly, and monthly statistics</li>
+         <li>✅ Secure local data storage persistence</li>
+        </ul>
+       </div>
+       <div class="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50">
+        <h3 class="text-lg font-bold text-cyan-400 mb-2">👨‍💻 Author / Developer:</h3>
+        <p id="developer-name" class="text-sm text-slate-300">Mohamed Mohamed Rashad</p>
+       </div>
+       <div class="p-4 rounded-lg bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30">
+        <p class="text-sm text-center text-slate-300">🌊 <strong>Let's conserve water together!</strong></p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <!-- ربط ملف البرمجة والتفاعل الخارجي -->
+  <script src="script.js"></script>
+ </body>
+</html>
